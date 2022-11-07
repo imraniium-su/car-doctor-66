@@ -31,10 +31,11 @@ const Checkout = () => {
 
         // }
 
-        fetch('http://localhost:5000/orders', {
+        fetch('https://car-doctor-server-66.vercel.app/orders', {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('carDoctor-token')}`
             },
             body: JSON.stringify(order)
         })

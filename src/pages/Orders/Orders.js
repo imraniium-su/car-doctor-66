@@ -3,20 +3,33 @@ import { AuthContext } from '../../context/AuthProvider/AuthProvider';
 import OrderRow from './OrderRow';
 
 const Orders = () => {
-    const { user } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
     const [orders, setOrder] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/orders?email=${user?.email}`)
-            .then(res => res.json())
+        fetch(`https://car-doctor-server-66.vercel.app/orders?email=${user?.email}`, {
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('carDoctor-token')}`
+            }
+        })
+            .then(res => {
+                if (res.status === 401 || res.status === 403) {
+                    return logOut()
+                }
+                return res.json();
+            })
             .then(data => setOrder(data))
-    }, [user?.email])
+    }, [user?.email, logOut])
 
     const handleDelete = id => {
         const proceed = window.confirm('Are you sure, you want to cancel this order');
         if (proceed) {
-            fetch(`http://localhost:5000/orders/${id}`, {
-                method: 'DELETE'
+            fetch(`https://car-doctor-server-66.vercel.app/orders/${id}`, {
+                method: 'DELETE',
+
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('carDoctor-token')}`
+                }
             })
                 .then(res => res.json())
                 .then(data => {
@@ -31,10 +44,11 @@ const Orders = () => {
     }
 
     const handleStatusUpdate = id => {
-        fetch(`http://localhost:5000/orders/${id}`, {
+        fetch(`https://car-doctor-server-66.vercel.app/orders/${id}`, {
             method: 'PATCH',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('carDoctor-token')}`
             },
             body: JSON.stringify({ status: 'Approved' })
         })

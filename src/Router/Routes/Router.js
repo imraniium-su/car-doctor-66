@@ -5,6 +5,7 @@ import Hone from '../../pages/Home/Hone';
 import Login from '../../pages/Login/Login';
 import Orders from '../../pages/Orders/Orders';
 import SignUp from '../../pages/SignUp/SignUp';
+import PrivateRoute from '../PrivateRoute/PrivateRoute';
 const router = createBrowserRouter([
     {
         path: '/',
@@ -19,11 +20,11 @@ const router = createBrowserRouter([
                 path: '/signup', element: <SignUp></SignUp>
             },
             {
-                path: '/checkout/:id', element: <Checkout></Checkout>,
-                loader: ({ params }) => fetch(`http://localhost:5000/services/${params.id}`)
+                path: '/checkout/:id', element: <PrivateRoute><Checkout></Checkout></PrivateRoute>,
+                loader: ({ params }) => fetch(`https://car-doctor-server-66.vercel.app/services/${params.id}`)
             },
             {
-                path: '/orders', element: <Orders></Orders>
+                path: '/orders', element: <PrivateRoute><Orders></Orders></PrivateRoute>
             }
         ]
     }
